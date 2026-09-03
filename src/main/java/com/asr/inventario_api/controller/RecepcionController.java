@@ -43,4 +43,11 @@ public class RecepcionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @Autowired
+    private com.asr.inventario_api.repository.RecepcionRepository recepcionRepository;
+    @GetMapping
+    public ResponseEntity<List<Recepcion>> listarRecepciones() {
+        List<Recepcion> lista = recepcionRepository.findAll();
+        return ResponseEntity.ok(lista);
+    }
 }
