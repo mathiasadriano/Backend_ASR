@@ -35,19 +35,18 @@ public class RecepcionController {
                     request.getRecepcion(), 
                     request.getProducto()
             );
-            // Forma moderna y clara (Evita la ambigüedad)
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevaRecepcion);
         } catch (Exception e) {
             e.printStackTrace(); 
-            // Forma moderna para retornar un error 500 sin confundir a Java
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
     @Autowired
     private com.asr.inventario_api.repository.RecepcionRepository recepcionRepository;
+
     @GetMapping
-    public ResponseEntity<List<Recepcion>> listarRecepciones() {
-        List<Recepcion> lista = recepcionRepository.findAll();
+    public ResponseEntity<java.util.List<Recepcion>> listarRecepciones() {
+        java.util.List<Recepcion> lista = recepcionRepository.findAll();
         return ResponseEntity.ok(lista);
     }
 }
