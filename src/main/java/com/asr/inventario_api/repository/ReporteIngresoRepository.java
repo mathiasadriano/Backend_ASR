@@ -1,6 +1,6 @@
 package com.asr.inventario_api.repository; 
 
-import com.tuempresa.inventario.model.ReporteIngreso;
+import com.asr.inventario_api.model.ReporteIngreso;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
