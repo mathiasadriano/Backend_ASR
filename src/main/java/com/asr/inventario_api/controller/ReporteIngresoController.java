@@ -1,0 +1,31 @@
+package com.asr.inventario.controller; 
+
+import com.asr.inventario.model.ReporteIngreso;
+import com.asr.inventario.repository.ReporteIngresoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/reportes-ingresos")
+@CrossOrigin(origins = "*") // ¡Esta es la línea mágica que mata el error rojo de tu captura!
+public class ReporteIngresoController {
+
+    @Autowired
+    private ReporteIngresoRepository repository;
+
+    // Método para devolver la lista de reportes (GET)
+    @GetMapping
+    public List<ReporteIngreso> obtenerTodos() {
+        return repository.findAll();
+    }
+
+    // Método para guardar un nuevo reporte (POST)
+    @PostMapping
+    public ResponseEntity<ReporteIngreso> crearReporte(@RequestBody ReporteIngreso reporte) {
+        ReporteIngreso nuevoReporte = repository.save(reporte);
+        return ResponseEntity.ok(nuevoReporte);
+    }
+}
