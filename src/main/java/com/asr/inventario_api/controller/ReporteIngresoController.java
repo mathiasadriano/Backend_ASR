@@ -1,7 +1,7 @@
-package com.asr.inventario.controller; 
+package com.asr.inventario_api.controller; 
 
-import com.asr.inventario.model.ReporteIngreso;
-import com.asr.inventario.repository.ReporteIngresoRepository;
+import com.asr.inventario_api.model.ReporteIngreso;
+import com.asr.inventario_api.repository.ReporteIngresoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/reportes-ingresos")
-@CrossOrigin(origins = "*") // ¡Esta es la línea mágica que mata el error rojo de tu captura!
+@CrossOrigin(origins = "*") 
 public class ReporteIngresoController {
 
     @Autowired

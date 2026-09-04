@@ -1,4 +1,4 @@
-package com.asr.inventario.model; 
+package com.asr.inventario_api.model; 
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
