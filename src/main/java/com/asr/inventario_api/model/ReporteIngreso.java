@@ -14,13 +14,12 @@ public class ReporteIngreso {
     private String insumo;
     private Double cantidad;
     private String numeroPedido;
+    private String guiaFactura; 
     private String solicitante;
     private LocalDate fecha;
 
-    // Constructores
     public ReporteIngreso() {}
 
-    // Getters y Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -32,6 +31,9 @@ public class ReporteIngreso {
 
     public String getNumeroPedido() { return numeroPedido; }
     public void setNumeroPedido(String numeroPedido) { this.numeroPedido = numeroPedido; }
+
+    public String getGuiaFactura() { return guiaFactura; }
+    public void setGuiaFactura(String guiaFactura) { this.guiaFactura = guiaFactura; }
 
     public String getSolicitante() { return solicitante; }
     public void setSolicitante(String solicitante) { this.solicitante = solicitante; }
