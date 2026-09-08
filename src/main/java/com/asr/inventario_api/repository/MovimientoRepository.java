@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface MovimientoRepository extends JpaRepository<Movimiento, Long> {
     List<Movimiento> findAllByOrderByFechaDesc();
+    List<Movimiento> findByFechaBetween(LocalDateTime inicio, LocalDateTime fin);
 }

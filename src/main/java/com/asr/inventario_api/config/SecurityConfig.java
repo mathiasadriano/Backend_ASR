@@ -24,6 +24,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll() 
+                .requestMatchers("/api/reportes/enviar-diario").permitAll()
                 .anyRequest().authenticated() 
             )
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {})); 
