@@ -14,7 +14,6 @@ public class ReporteController {
 
     @PostMapping("/enviar-diario")
     public ResponseEntity<String> enviarReporte(@RequestParam String secret) {
-        // Clave secreta para que nadie más pueda disparar el correo
         if (!"ASR_PAMPA_2026_SECRETO".equals(secret)) {
             return ResponseEntity.status(403).body("Acceso denegado");
         }

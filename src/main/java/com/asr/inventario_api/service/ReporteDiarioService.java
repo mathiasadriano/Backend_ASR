@@ -1,34 +1,35 @@
 package com.asr.inventario_api.service;
 
-import com.asr.inventario_api.model.Movimiento;
-import com.asr.inventario_api.repository.MovimientoRepository;
+import com.asr.inventario_api.model.ReporteIngreso;
+import com.asr.inventario_api.repository.ReporteIngresoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import jakarta.mail.internet.MimeMessage;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
 public class ReporteDiarioService {
 
     @Autowired
-    private MovimientoRepository movimientoRepository;
+    private ReporteIngresoRepository reporteIngresoRepository;
 
     @Autowired
     private JavaMailSender mailSender;
 
     public String generarYEnviarReporteDiario() {
+        // 1. Obtener la fecha de hoy en Perú
         ZoneId zonaLima = ZoneId.of("America/Lima");
         LocalDate hoy = LocalDate.now(zonaLima);
-        LocalDateTime inicioDia = hoy.atStartOfDay();
-        LocalDateTime finDia = hoy.atTime(LocalTime.MAX);
 
-        List<Movimiento> movimientos = movimientoRepository.findByFechaBetween(inicioDia, finDia);
+        // 2. Buscar en la BD usando la nueva función del repositorio
+        List<ReporteIngreso> ingresos = reporteIngresoRepository.findByFecha(hoy);
 
-        if (movimientos.isEmpty()) {
-            return "No hubo movimientos hoy (" + hoy + "). No se envió correo.";
+        if (ingresos.isEmpty()) {
+            return "No hubo Registros de Ingreso hoy (" + hoy + "). No se envió correo.";
         }
 
         try {
@@ -37,34 +38,33 @@ public class ReporteDiarioService {
 
             String[] destinatarios = {"jlopez@asr.com.pe", "mathiasadrianohl@gmail.com"};
             helper.setTo(destinatarios);
-            helper.setSubject("Reporte Diario de Almacén Pampa Grande - " + hoy);
+            helper.setSubject("Reporte de Registro de Ingresos - " + hoy);
 
             StringBuilder html = new StringBuilder();
-            html.append("<h2 style='color: #2E7D32;'>Resumen de Movimientos del Día</h2>");
+            html.append("<h2 style='color: #2b6c56;'>Reporte Diario: Documentos y Guías de Ingreso</h2>");
             html.append("<table border='1' cellpadding='8' style='border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;'>");
-            html.append("<tr style='background-color: #4CAF50; color: white;'>");
-            html.append("<th>Tipo</th><th>Producto</th><th>Cantidad</th><th>Motivo</th><th>Responsable</th></tr>");
+            html.append("<tr style='background-color: #538b76; color: white;'>");
+            
+            // Cabeceras de la tabla
+            html.append("<th>Insumo</th><th>Cantidad</th><th>N° Pedido</th><th>Guía/Factura</th><th>Solicitante</th></tr>");
 
-            for (Movimiento m : movimientos) {
-                String colorFondo = m.getTipo().equalsIgnoreCase("entrada") ? "#E8F5E9" : "#FFEBEE";
-                String tipoMayus = m.getTipo().toUpperCase();
-                String nombreProd = m.getProducto() != null ? m.getProducto().getNombre() : "Producto Desconocido";
-                
-                html.append("<tr style='background-color: ").append(colorFondo).append("; text-align: center;'>");
-                html.append("<td><strong>").append(tipoMayus).append("</strong></td>");
-                html.append("<td>").append(nombreProd).append("</td>");
-                html.append("<td>").append(m.getCantidad()).append("</td>");
-                html.append("<td>").append(m.getMotivo()).append("</td>");
-                html.append("<td>").append(m.getResponsable()).append("</td>");
+            // Llenado de datos con los nombres exactos de tu modelo
+            for (ReporteIngreso ingreso : ingresos) {
+                html.append("<tr style='text-align: center;'>");
+                html.append("<td>").append(ingreso.getInsumo()).append("</td>");
+                html.append("<td>").append(ingreso.getCantidad()).append("</td>");
+                html.append("<td>").append(ingreso.getNumeroPedido()).append("</td>");
+                html.append("<td>").append(ingreso.getGuiaFactura()).append("</td>");
+                html.append("<td>").append(ingreso.getSolicitante()).append("</td>");
                 html.append("</tr>");
             }
             html.append("</table>");
-            html.append("<br><p style='color: #555;'><em>Sistema Automático de Inventario - ASR Agrícola</em></p>");
+            html.append("<br><p style='color: #555;'><em>Sistema Automático de Gestión - ASR Agrícola</em></p>");
 
             helper.setText(html.toString(), true);
             mailSender.send(mensaje);
 
-            return "Correo enviado con éxito. Total movimientos: " + movimientos.size();
+            return "Correo enviado con éxito. Total registros: " + ingresos.size();
 
         } catch (Exception e) {
             e.printStackTrace();
