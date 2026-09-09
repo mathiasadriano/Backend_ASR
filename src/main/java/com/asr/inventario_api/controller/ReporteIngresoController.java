@@ -16,16 +16,40 @@ public class ReporteIngresoController {
     @Autowired
     private ReporteIngresoRepository repository;
 
-    // Método para devolver la lista de reportes (GET)
     @GetMapping
     public List<ReporteIngreso> obtenerTodos() {
         return repository.findAll();
     }
 
-    // Método para guardar un nuevo reporte (POST)
     @PostMapping
     public ResponseEntity<ReporteIngreso> crearReporte(@RequestBody ReporteIngreso reporte) {
         ReporteIngreso nuevoReporte = repository.save(reporte);
         return ResponseEntity.ok(nuevoReporte);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> eliminarIngreso(@PathVariable Long id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+            return ResponseEntity.ok("Registro eliminado correctamente");
+        }
+        return ResponseEntity.status(404).body("Registro no encontrado");
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ReporteIngreso> actualizarIngreso(@PathVariable Long id, @RequestBody ReporteIngreso datosActualizados) {
+        return repository.findById(id)
+            .map(registroExistente -> {
+                registroExistente.setInsumo(datosActualizados.getInsumo());
+                registroExistente.setCantidad(datosActualizados.getCantidad());
+                registroExistente.setNumeroPedido(datosActualizados.getNumeroPedido());
+                registroExistente.setGuiaFactura(datosActualizados.getGuiaFactura());
+                // Ajusta 'getSolicitante' al nombre real de tu campo si en tu BD es 'Proveedor'
+                registroExistente.setSolicitante(datosActualizados.getSolicitante()); 
+                registroExistente.setFecha(datosActualizados.getFecha());
+                
+                return ResponseEntity.ok(repository.save(registroExistente));
+            })
+            .orElse(ResponseEntity.notFound().build());
     }
 }
